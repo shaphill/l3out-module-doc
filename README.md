@@ -196,7 +196,42 @@ To begin the OSPF configuration, we create the [ospf](#input\_ospf) block and pa
   ospf  =  {
     area_id    =  "0"
     area_type  =  "regular"
+  }
+```
+Next, because we are configuring vPCs, we will use the vPC variable block to define all of our interface and node policies.
+```
+  vpcs  =  [
+  {
+    ospf_interface_profile  = {
+    }
+pod_id  =  1
+nodes  = [
+{
+node_id  =  "103"
+router_id  =  "103.103.103.103"
+router_id_loopback  =  "yes"
+},
+{
+node_id  =  "104"
+router_id  =  "104.104.104.104"
+router_id_loopback  =  "yes"
 }
+]
+interfaces  = [
+{
+channel  =  "sp-vpc"
+vlan  =  "107"
+mtu =  "1500"
+side_a  = {
+ip  =  "10.0.1.2/24"
+}
+side_b  = {
+ip  =  "10.0.1.3/24"
+}
+}
+]
+}
+]
 ```
 
 
@@ -234,7 +269,7 @@ To begin the OSPF configuration, we create the [ospf](#input\_ospf) block and pa
 | <span id="input_vpcs"></span> [vpcs](#input\_vpcs) <br> Simplified Block for defining VPCs | <pre>list(object(<br>    {<br>      pod_id = optional(string)<br>      nodes = optional(list(object(<br>        {<br>          node_id            = optional(string)<br>          router_id          = optional(string)<br>          router_id_loopback = optional(string)<br>          loopback_address   = optional(string)<br>        }<br>      )))<br>      interfaces = optional(list(object(<br>        {<br>          channel = optional(string)<br>          vlan    = optional(string)<br>          side_a = object(<br>            {<br>              ip                       = optional(string)<br>              ipv6                     = optional(string)<br>              link_local_address       = optional(string)<br>              secondary_ip_addresses   = optional(list(string))<br>              secondary_ipv6_addresses = optional(list(string))<br>          })<br>          side_b = object(<br>            {<br>              ip                       = optional(string)<br>              ipv6                     = optional(string)<br>              link_local_address       = optional(string)<br>              secondary_ip_addresses   = optional(list(string))<br>              secondary_ipv6_addresses = optional(list(string))<br>          })<br>          bgp_peers = optional(list(object(<br>            {<br>              ip_address          = optional(string)<br>              ipv6_address        = optional(string)<br>              address_control     = optional(list(string))<br>              allowed_self_as_cnt = optional(string)<br>              annotation          = optional(string)<br>              bgp_controls = optional(object(<br>                {<br>                  allow_self_as     = optional(bool)<br>                  as_override       = optional(bool)<br>                  dis_peer_as_check = optional(bool)<br>                  nh_self           = optional(bool)<br>                  send_com          = optional(bool)<br>                  send_ext_com      = optional(bool)<br>                }<br>              ))<br>              alias                  = optional(string)<br>              password               = optional(string)<br>              peer_controls          = optional(list(string))<br>              private_as_control     = optional(list(string))<br>              ebgp_multihop_ttl      = optional(string)<br>              weight                 = optional(string)<br>              as_number              = optional(string)<br>              local_asn              = optional(string)<br>              local_as_number_config = optional(string)<br>              admin_state            = optional(string)<br>              route_control_profiles = optional(list(object({<br>                direction = string<br>                target_dn = string<br>                }<br>              )))<br>            }<br>          )))<br>        }<br>      )))<br>      static_routes = optional(list(object(<br>        {<br>          prefix              = string<br>          fallback_preference = optional(string)<br>          route_control       = optional(bool)<br>          track_policy        = optional(string)<br>          next_hop_addresses = optional(list(object(<br>            {<br>              next_hop_ip           = string<br>              preference            = optional(string)<br>              next_hop_profile_type = optional(string)<br>              track_member          = optional(string)<br>              track_policy          = optional(string)<br><br>            }<br>          )))<br>        }<br>      )))<br>      ospf_interface_profile = optional(object(<br>        {<br>          authentication_key    = optional(string)<br>          authentication_key_id = optional(string)<br>          authentication_type   = optional(string)<br>          ospf_interface_policy = optional(string)<br>          description           = optional(string)<br>          annotation            = optional(string)<br>        }<br>      ))<br>      bgp_peers = optional(list(object(<br>        {<br>          loopback_as_source  = optional(bool)<br>          ip_address          = optional(string)<br>          ipv6_address        = optional(string)<br>          address_control     = optional(list(string))<br>          allowed_self_as_cnt = optional(string)<br>          annotation          = optional(string)<br>          bgp_controls = optional(object(<br>            {<br>              allow_self_as     = optional(bool)<br>              as_override       = optional(bool)<br>              dis_peer_as_check = optional(bool)<br>              nh_self           = optional(bool)<br>              send_com          = optional(bool)<br>              send_ext_com      = optional(bool)<br>            }<br>          ))<br>          alias                  = optional(string)<br>          password               = optional(string)<br>          peer_controls          = optional(list(string))<br>          private_as_control     = optional(list(string))<br>          ebgp_multihop_ttl      = optional(string)<br>          weight                 = optional(string)<br>          as_number              = optional(string)<br>          local_asn              = optional(string)<br>          local_as_number_config = optional(string)<br>          admin_state            = optional(string)<br>          route_control_profiles = optional(list(object({<br>            direction = string<br>            target_dn = string<br>            }<br>          )))<br>        }<br>      )))<br>    }<br><br>  ))</pre> | <pre>[<br>  {<br>    "loopback_as_source": true,<br>    "nodes": []<br>  }<br>]</pre> | no |
 | <span id="input_vrf_dn"></span> [vrf\_dn](#input\_vrf\_dn) <br> Distinguished name of the vrf | `string` | `""` | no |
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwNTY3MzYyNzUsODQ5ODAxNzgyLC0xMj
+eyJoaXN0b3J5IjpbLTIwMDIzNzU2ODAsODQ5ODAxNzgyLC0xMj
 IyMjM5MTIxLC01MzYxMjc3NSwtMTQyMDU5MDU3NCwtNDE2NzA5
 MjI0LDgwNjg0MTk3OCwxNzQ4ODY5MTkyLC0yMTQwNDI2NTYzLD
 gwNzY3NTY5LDE2ODg0OTg4MjYsLTE2NDUxOTExNzcsMTE2NTYx
